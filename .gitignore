@@ -4,3 +4,5 @@ static/users.db
 __pycache__/
 *.pyc
 .env
+cloudflared.exe
+models/
