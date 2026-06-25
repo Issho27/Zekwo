@@ -6,3 +6,5 @@ __pycache__/
 .env
 cloudflared.exe
 models/
+HuggingFaceToken.txt
+keys.env
