@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #020b18;
+  min-height: 100vh;
+  font-family: 'Quicksand', sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+
+/* ── Layout ── */
+.page {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.page.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Header ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 0 40px;
+  border-bottom: 1px solid rgba(232,182,92,0.1);
+  margin-bottom: 36px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.26em;
+  color: #f7f1e3;
+  text-shadow: 0 0 18px rgba(232,182,92,0.22);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(240,230,210,0.12);
+  background: transparent;
+  color: rgba(240,230,210,0.5);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.back-btn:hover {
+  border-color: rgba(240,230,210,0.28);
+  color: rgba(240,230,210,0.85);
+  background: rgba(255,255,255,0.03);
+}
+.back-btn svg {
+  width: 13px; height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 20px;
+  background: rgba(247,241,227,0.05);
+  border: 1px solid rgba(232,182,92,0.12);
+}
+
+.user-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #e0a23a;
+  box-shadow: 0 0 6px rgba(232,182,92,0.6);
+}
+
+.user-name {
+  font-size: 12px;
+  color: rgba(240,230,210,0.6);
+  letter-spacing: 0.04em;
+}
+
+.logout-btn {
+  font-size: 11px;
+  color: rgba(240,230,210,0.28);
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  text-decoration: none;
+}
+.logout-btn:hover { color: rgba(240,230,210,0.6); }
+
+/* ── Section title + new button ── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(240,230,210,0.3);
+}
+
+.new-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(232,182,92,0.18), rgba(138,82,18,0.14));
+  border: 1px solid rgba(232,182,92,0.28);
+  color: #f3e3c4;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+}
+.new-btn:hover {
+  background: linear-gradient(135deg, rgba(232,182,92,0.26), rgba(138,82,18,0.22));
+  box-shadow: 0 0 18px rgba(232,182,92,0.18);
+  transform: translateY(-1px);
+}
+.new-btn svg {
+  width: 13px; height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* ── Nova cards ── */
+.novae-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nova-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: rgba(4, 14, 30, 0.55);
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+.nova-card:hover {
+  background: rgba(8, 22, 48, 0.7);
+  border-color: rgba(232,182,92,0.18);
+  transform: translateX(3px);
+}
+
+/* étoile décorative */
+.nova-star {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: radial-gradient(circle, #fff 0%, rgba(200,220,255,0.6) 60%, transparent 100%);
+  box-shadow: 0 0 6px 1px rgba(200,220,255,0.35);
+}
+
+.nova-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nova-title {
+  font-size: 14px;
+  color: #f0ebe0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.nova-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nova-date {
+  font-size: 11px;
+  color: rgba(240,230,210,0.28);
+  letter-spacing: 0.04em;
+}
+
+.nova-badge {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.nova-badge.stable {
+  background: rgba(80,180,120,0.1);
+  border: 1px solid rgba(80,180,120,0.22);
+  color: rgba(120,220,160,0.65);
+}
+.nova-badge.expanding {
+  background: rgba(90,140,255,0.1);
+  border: 1px solid rgba(90,140,255,0.22);
+  color: rgba(130,170,255,0.65);
+}
+.nova-badge.critical {
+  background: rgba(180,60,60,0.1);
+  border: 1px solid rgba(220,80,80,0.22);
+  color: rgba(255,130,130,0.65);
+}
+
+.nova-msgs {
+  font-size: 11px;
+  color: rgba(232,182,92,0.4);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.delete-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(240,230,210,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.delete-btn:hover {
+  color: rgba(220,80,80,0.7);
+  border-color: rgba(220,80,80,0.2);
+  background: rgba(180,40,40,0.08);
+}
+.delete-btn svg {
+  width: 13px; height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 70px 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.empty-state.visible { display: flex; }
+
+.empty-icon {
+  font-size: 32px;
+  opacity: 0.25;
+}
+.empty-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: rgba(240,230,210,0.25);
+  text-transform: uppercase;
+}
+.empty-sub {
+  font-size: 13px;
+  color: rgba(240,230,210,0.2);
+}
+
+/* ── Loading ── */
+.loading {
+  text-align: center;
+  padding: 60px 0;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(240,230,210,0.2);
+  text-transform: uppercase;
+}
+
+/* ── Confirm overlay ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(2,11,24,0.4);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+}
+
+.confirm-box {
+  max-width: 380px;
+  width: 90%;
+  padding: 28px 26px 24px;
+  border-radius: 14px;
+  background: rgba(6, 18, 38, 0.88);
+  border: 1px solid rgba(220,80,80,0.25);
+  box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  text-align: center;
+  transform: scale(0.93);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s ease;
+}
+.overlay.visible .confirm-box {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.confirm-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f0e3ff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.confirm-sub {
+  font-size: 12px;
+  color: rgba(240,230,210,0.35);
+  margin-bottom: 22px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-yes {
+  padding: 10px 22px;
+  border-radius: 8px;
+  background: rgba(180,40,40,0.2);
+  border: 1px solid rgba(220,80,80,0.35);
+  color: rgba(255,140,140,0.9);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.confirm-yes:hover {
+  background: rgba(180,40,40,0.32);
+  box-shadow: 0 0 14px rgba(200,60,60,0.2);
+}
+
+.confirm-no {
+  padding: 10px 22px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(240,230,210,0.12);
+  color: rgba(240,230,210,0.45);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.confirm-no:hover {
+  border-color: rgba(240,230,210,0.28);
+  color: rgba(240,230,210,0.7);
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="page" id="page">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">ZEKWO</div>
+      <a href="/chat" class="back-btn">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to chat
+      </a>
+    </div>
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-dot"></div>
+        <span class="user-name" id="userName">—</span>
+      </div>
+      <a href="/logout" class="logout-btn">Sign out</a>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Your Novae</span>
+    <button class="new-btn" onclick="newNova()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Nova
+    </button>
+  </div>
+
+  <div id="loadingState" class="loading">Loading novae…</div>
+
+  <div class="novae-list" id="novaeList"></div>
+
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">✦</div>
+    <div class="empty-title">No novae yet</div>
+    <div class="empty-sub">Start a conversation to create your first nova.</div>
+  </div>
+
+</div>
+
+<!-- Confirm delete overlay -->
+<div class="overlay" id="overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Forget this Nova?</div>
+    <div class="confirm-sub">This action is irreversible.</div>
+    <div class="confirm-actions">
+      <button class="confirm-yes" id="confirmYes">Forget</button>
+      <button class="confirm-no" id="confirmNo">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= FOND COSMIQUE LÉGER (identique login) ================= */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const STAR_COUNT = 350;
+const stars = [];
+for (let i = 0; i < STAR_COUNT; i++) {
+  stars.push({
+    ox: Math.random(), oy: Math.random(),
+    r: Math.random() * 1.1 + 0.25,
+    a: Math.random() * 0.55 + 0.2,
+    t: Math.random() * Math.PI * 2
+  });
+}
+
+const nebulaPalette = [
+  { r: 190, g: 40,  b: 70  },
+  { r: 160, g: 30,  b: 95  },
+  { r: 120, g: 35,  b: 160 },
+  { r: 95,  g: 35,  b: 135 }
+];
+const nebulae = [];
+for (let i = 0; i < 5; i++) {
+  const c = nebulaPalette[Math.floor(Math.random() * nebulaPalette.length)];
+  nebulae.push({
+    ox: Math.random(), oy: Math.random(),
+    radius: 60 + Math.random() * 70,
+    baseAlpha: 0.03 + Math.random() * 0.055,
+    color: c, t: Math.random() * Math.PI * 2
+  });
+}
+
+const bigNebulaPalettes = [
+  { inner: '180,235,255', mid: '60,150,215',  outer: '20,55,100' },
+  { inner: '255,205,240', mid: '180,70,205',  outer: '60,18,80'  },
+  { inner: '215,215,255', mid: '95,95,210',   outer: '28,28,82'  }
+];
+const bigNebulae = [];
+for (let i = 0; i < 2; i++) {
+  const palette = bigNebulaPalettes[i % bigNebulaPalettes.length];
+  const radius = 200 + Math.random() * 130;
+  const blobs = [];
+  for (let b = 0; b < 3; b++) {
+    const a = Math.random() * Math.PI * 2;
+    const distFrac = 0.25 + Math.random() * 0.5;
+    blobs.push({ dx: Math.cos(a) * distFrac, dy: Math.sin(a) * distFrac, rFrac: 0.45 + Math.random() * 0.4 });
+  }
+  bigNebulae.push({
+    ox: Math.random(), oy: Math.random(),
+    radius, palette, blobs,
+    baseAlpha: 0.04 + Math.random() * 0.035,
+    t: Math.random() * Math.PI * 2
+  });
+}
+
+function drawNebulae() {
+  const cx = canvas.width, cy = canvas.height;
+  nebulae.forEach(n => {
+    n.t += 0.003;
+    const alpha = Math.min(1, Math.max(0, n.baseAlpha * (0.88 + Math.sin(n.t) * 0.12)));
+    if (alpha <= 0.001) return;
+    const x = n.ox * cx, y = n.oy * cy;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, n.radius);
+    g.addColorStop(0, `rgba(${n.color.r},${n.color.g},${n.color.b},${alpha})`);
+    g.addColorStop(0.5, `rgba(${n.color.r},${n.color.g},${n.color.b},${alpha * 0.4})`);
+    g.addColorStop(1, `rgba(${n.color.r},${n.color.g},${n.color.b},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, n.radius, 0, Math.PI * 2); ctx.fill();
+  });
+}
+
+function drawBigNebulae() {
+  const cx = canvas.width, cy = canvas.height;
+  bigNebulae.forEach(n => {
+    n.t += 0.002;
+    const alpha = Math.min(1, Math.max(0, n.baseAlpha * (0.92 + Math.sin(n.t) * 0.08)));
+    if (alpha <= 0.001) return;
+    const pal = n.palette;
+    const x = n.ox * cx, y = n.oy * cy;
+    const halo = ctx.createRadialGradient(x, y, n.radius * 0.25, x, y, n.radius);
+    halo.addColorStop(0, `rgba(${pal.mid},0)`);
+    halo.addColorStop(0.7, `rgba(${pal.outer},${alpha * 0.3})`);
+    halo.addColorStop(1, `rgba(${pal.outer},0)`);
+    ctx.fillStyle = halo;
+    ctx.beginPath(); ctx.arc(x, y, n.radius, 0, Math.PI * 2); ctx.fill();
+    n.blobs.forEach(b => {
+      const bx = x + b.dx * n.radius, by = y + b.dy * n.radius;
+      const br = n.radius * b.rFrac * 0.5;
+      const g = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+      g.addColorStop(0, `rgba(${pal.inner},${alpha * 0.04})`);
+      g.addColorStop(0.4, `rgba(${pal.inner},${alpha * 0.75})`);
+      g.addColorStop(0.7, `rgba(${pal.mid},${alpha * 0.4})`);
+      g.addColorStop(1, `rgba(${pal.outer},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill();
+    });
+  });
+}
+
+function draw() {
+  const cx = canvas.width, cy = canvas.height;
+  ctx.fillStyle = '#020b18';
+  ctx.fillRect(0, 0, cx, cy);
+  drawBigNebulae();
+  drawNebulae();
+  stars.forEach(s => {
+    s.t += 0.008;
+    const alpha = Math.min(1, Math.max(0, s.a + Math.sin(s.t) * 0.15));
+    ctx.beginPath();
+    ctx.arc(s.ox * cx, s.oy * cy, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(220,232,255,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ================= LOGIQUE PAGE ================= */
+
+const SPECTRAL_CLASSES = ["O","B","A","F","G","K","M"];
+const SPECTRAL_TEMPS = { O:"~30 000 K",B:"~15 000 K",A:"~8 500 K",F:"~6 500 K",G:"~5 800 K",K:"~4 500 K",M:"~3 200 K" };
+const STATUTS = ["Stable","En expansion","Phase critique"];
+const STATUT_CLASSES = { "Stable": "stable", "En expansion": "expanding", "Phase critique": "critical" };
+const STATUT_LABELS = { "Stable": "Stable", "En expansion": "Expanding", "Phase critique": "Critical" };
+
+function seededRandom(seed) {
+  let s = seed % 2147483647;
+  if (s <= 0) s += 2147483646;
+  return function() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+}
+
+function ficheLocale(conv) {
+  const seed = [...conv.id].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const rand = seededRandom(seed);
+  const classes = ["O","B","A","F","G","K","M"];
+  const statuts = ["Stable","En expansion","Phase critique"];
+  const classe = classes[Math.floor(rand() * classes.length)];
+  const statut = statuts[Math.floor(rand() * statuts.length)];
+  const nb = (conv.messages || []).filter(m => m.role === "user" || m.role === "assistant").length;
+  return { classe, statut, nb };
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+let pendingDeleteId = null;
+
+function showConfirm(convId) {
+  pendingDeleteId = convId;
+  document.getElementById('overlay').classList.add('visible');
+}
+
+function hideConfirm() {
+  pendingDeleteId = null;
+  document.getElementById('overlay').classList.remove('visible');
+}
+
+document.getElementById('confirmNo').addEventListener('click', hideConfirm);
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) hideConfirm();
+});
+
+document.getElementById('confirmYes').addEventListener('click', async () => {
+  if (!pendingDeleteId) return;
+  await fetch(`/conversations/${pendingDeleteId}`, { method: 'DELETE' });
+  hideConfirm();
+  chargerNovae();
+});
+
+function buildCard(conv) {
+  const { classe, statut, nb } = ficheLocale(conv);
+  const statClass = STATUT_CLASSES[statut] || 'stable';
+  const statLabel = STATUT_LABELS[statut] || statut;
+
+  const card = document.createElement('div');
+  card.className = 'nova-card';
+
+  card.innerHTML = `
+    <div class="nova-star"></div>
+    <div class="nova-info">
+      <div class="nova-title">${conv.titre}</div>
+      <div class="nova-meta">
+        <span class="nova-date">${formatDate(conv.date)}</span>
+        <span class="nova-badge ${statClass}">${statLabel}</span>
+      </div>
+    </div>
+    <div class="nova-msgs">${Math.floor(nb / 2)} exchange${Math.floor(nb / 2) !== 1 ? 's' : ''}</div>
+    <button class="delete-btn" title="Forget this nova">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </button>
+  `;
+
+  // Clic sur la card → ouvre le chat
+  card.addEventListener('click', e => {
+    if (e.target.closest('.delete-btn')) return;
+    window.location.href = `/chat?id=${conv.id}`;
+  });
+
+  // Bouton delete
+  card.querySelector('.delete-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    showConfirm(conv.id);
+  });
+
+  return card;
+}
+
+async function chargerNovae() {
+  const list = document.getElementById('novaeList');
+  const empty = document.getElementById('emptyState');
+  const loading = document.getElementById('loadingState');
+
+  list.innerHTML = '';
+  empty.classList.remove('visible');
+  loading.style.display = 'block';
+
+  const res = await fetch('/conversations');
+  const novae = await res.json();
+
+  loading.style.display = 'none';
+
+  if (!novae.length) {
+    empty.classList.add('visible');
+    return;
+  }
+
+  novae.forEach(conv => list.appendChild(buildCard(conv)));
+}
+
+async function newNova() {
+  const res = await fetch('/conversations/nouvelle', { method: 'POST' });
+  if (res.status === 403) {
+    alert('Daily limit reached (20 novae per day).');
+    return;
+  }
+  const data = await res.json();
+  window.location.href = `/chat?id=${data.id}`;
+}
+
+/* ── Init ── */
+window.addEventListener('load', async () => {
+  // Récupère le nom de l'utilisateur
+  const me = await fetch('/me').then(r => r.json());
+  if (me.username) {
+    document.getElementById('userName').textContent = me.username;
+  }
+
+  await chargerNovae();
+
+  setTimeout(() => {
+    document.getElementById('page').classList.add('visible');
+  }, 80);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "general": [
+    "https://www.lemonde.fr/rss/une.xml",
+    "https://www.francetvinfo.fr/titres.rss",
+    "https://feeds.bbci.co.uk/news/rss.xml",
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://www.theguardian.com/world/rss"
+  ],
+  "sport": [
+    "https://www.lequipe.fr/rss/actu_rss.xml",
+    "https://feeds.bbci.co.uk/sport/rss.xml",
+    "https://feeds.bbci.co.uk/sport/football/rss.xml"
+  ],
+  "tech": [
+    "https://www.numerama.com/feed/",
+    "https://www.frandroid.com/feed",
+    "https://feeds.bbci.co.uk/news/technology/rss.xml",
+    "https://www.theverge.com/rss/index.xml"
+  ],
+  "economie": [
+    "https://www.lesechos.fr/rss/rss_une_eco.xml",
+    "https://feeds.bbci.co.uk/news/business/rss.xml"
+  ],
+  "sciences": [
+    "https://www.futura-sciences.com/rss/actualites.xml",
+    "https://newsrss.bbc.co.uk/rss/newsonline_uk_edition/sci/tech/rss.xml",
+    "https://www.nasa.gov/news-release/feed/"
+  ],
+  "international": [
+    "https://www.france24.com/fr/rss",
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://www.aljazeera.com/xml/rss/all.xml"
+  ]
+}

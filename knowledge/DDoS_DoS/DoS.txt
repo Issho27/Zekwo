@@ -1,0 +1,208 @@
+Attaques DoS
+Définition
+Une attaque DoS, pour Denial of Service, vise à rendre un service indisponible en le surchargeant ou en exploitant ses limites. Contrairement à une DDoS, elle provient généralement d’une seule source ou d’un nombre très limité de sources.
+
+Le but n’est pas de voler des données, mais d’empêcher les utilisateurs légitimes d’accéder à un site, une API, un serveur ou une application.
+
+Différence entre DoS et DDoS
+Une attaque DoS vient d’un point unique ou presque unique. Une attaque DDoS est distribuée sur plusieurs machines, ce qui la rend plus difficile à bloquer.
+
+La DoS est souvent plus simple à détecter, car la source du trafic est moins dispersée. En revanche, elle peut toujours être très efficace si la cible a peu de marge de protection.
+
+Objectif d’une attaque
+Le but est d’épuiser une ressource critique du système cible. Cela peut être :
+
+la bande passante.
+
+le CPU.
+
+la mémoire.
+
+le nombre de connexions ouvertes.
+
+la capacité d’un service applicatif.
+
+Quand ces ressources sont saturées, le service devient lent, instable ou inaccessible.
+
+Types d’attaques DoS
+Attaques volumétriques
+Les attaques volumétriques saturent le réseau avec beaucoup de trafic provenant d’une source principale.
+
+Exemples :
+
+UDP flood.
+
+ICMP flood.
+
+envoi massif de paquets.
+
+trafic répétitif sur un port précis.
+
+Ces attaques cherchent surtout à consommer la capacité réseau disponible.
+
+Attaques protocolaires
+Les attaques protocolaires exploitent les limites de gestion des connexions ou des protocoles réseau.
+
+Exemples :
+
+SYN flood depuis une seule machine.
+
+fragmentation abusive.
+
+abus des tables d’état.
+
+connexions incomplètes répétées.
+
+Elles visent les ressources de traitement plutôt que le volume brut.
+
+Attaques applicatives
+Les attaques applicatives ciblent directement une application web, une API ou un service métier.
+
+Exemples :
+
+HTTP GET flood.
+
+HTTP POST flood.
+
+requêtes coûteuses répétées.
+
+attaques lentes comme Slowloris.
+
+Même avec un trafic relativement faible, elles peuvent provoquer un gros impact si chaque requête coûte cher à traiter.
+
+Déroulement d’une attaque DoS
+Phase 1 : préparation
+L’attaquant identifie la cible, ses points d’entrée et ses limites. Il peut analyser le temps de réponse, les ports ouverts, les ressources exposées et les protections éventuelles.
+
+Cette phase sert à déterminer quelle forme d’attaque aura le plus d’impact.
+
+Phase 2 : choix de la stratégie
+L’attaquant choisit entre saturation réseau, épuisement des connexions ou surcharge applicative. Le choix dépend du type de service visé et de sa robustesse.
+
+Une cible avec une bonne bande passante mais une application fragile sera plus vulnérable à une attaque applicative.
+
+Phase 3 : lancement du trafic
+Le trafic malveillant est envoyé depuis une seule source ou quelques sources. Il peut s’agir d’un flot continu de paquets, de requêtes HTTP, ou de connexions répétées.
+
+L’attaque peut être brutale ou progressive.
+
+Phase 4 : saturation
+Le service commence à ralentir. Les files d’attente augmentent, les connexions se remplissent, le CPU ou la mémoire montent, et les erreurs deviennent plus fréquentes.
+
+Les symptômes typiques incluent :
+
+hausse de la latence.
+
+timeouts.
+
+erreurs serveur.
+
+baisse du débit utile.
+
+indisponibilité partielle.
+
+Phase 5 : indisponibilité
+Quand les ressources sont épuisées, le service ne répond plus correctement. Les utilisateurs légitimes subissent des erreurs ou une impossibilité d’accès.
+
+Dans une DoS, cette indisponibilité peut être locale, temporaire ou ciblée sur un service précis.
+
+Comment une attaque DoS se réalise
+Source unique
+Le principe d’une DoS est de générer beaucoup de trafic depuis une seule machine ou un petit ensemble de machines. Cela peut suffire si la cible est peu protégée ou si le service est fragile.
+
+Exploitation de limites
+L’attaquant cherche à dépasser une limite précise :
+
+nombre max de connexions.
+
+taille des files d’attente.
+
+capacité de traitement.
+
+bande passante disponible.
+
+temps de traitement par requête.
+
+Surcharge ciblée
+L’attaque peut viser un endpoint précis, un port, une route API ou une fonctionnalité coûteuse. Un seul point de congestion peut suffire à dégrader tout le service.
+
+Signes de détection
+Indicateurs réseau
+hausse soudaine du trafic.
+
+paquets répétitifs.
+
+débit anormal sur un port.
+
+augmentation des connexions entrantes.
+
+Indicateurs serveur
+CPU élevé.
+
+mémoire en hausse.
+
+saturation des workers.
+
+temps de réponse plus long.
+
+erreurs répétées.
+
+Indicateurs applicatifs
+pages qui ne répondent plus.
+
+routes lentes.
+
+timeouts fréquents.
+
+erreurs 5xx.
+
+sessions qui expirent ou échouent.
+
+Détection
+Seuils
+La méthode la plus simple consiste à alerter quand une métrique dépasse un seuil normal. Par exemple, trop de requêtes par seconde ou trop de connexions ouvertes.
+
+Anomalies
+On compare le comportement courant à une baseline. Si le trafic ou les requêtes changent fortement, cela peut signaler une attaque.
+
+Corrélation
+On combine plusieurs métriques pour distinguer une vraie attaque d’un pic légitime. Par exemple, trafic élevé plus erreurs serveur plus latence élevée.
+
+Mitigation
+Filtrage
+Bloquer la source ou certaines requêtes peut stopper une attaque DoS simple. Comme la source est souvent unique, cette méthode est parfois efficace.
+
+Rate limiting
+Limiter le nombre de requêtes par IP ou par session réduit l’impact d’un flot excessif.
+
+Protection applicative
+Un WAF, des validations côté serveur et des restrictions sur les routes coûteuses peuvent aider.
+
+Redondance
+Une architecture résiliente permet de continuer à servir une partie du trafic même si une ressource est saturée.
+
+Prévention
+Durcissement
+Il faut limiter les endpoints coûteux, vérifier les entrées, et éviter les traitements trop lourds non protégés.
+
+Surveillance
+Les métriques réseau et serveur doivent être suivies en temps réel pour repérer rapidement les anomalies.
+
+Tests de charge
+Les tests aident à connaître la capacité réelle du système et ses points de rupture.
+
+Impact
+Une attaque DoS peut provoquer :
+
+indisponibilité partielle ou totale.
+
+ralentissement important.
+
+surcharge des équipes techniques.
+
+perte de confiance des utilisateurs.
+
+pertes financières si le service est critique.
+
+Résumé opérationnel
+Une attaque DoS est une tentative de saturation depuis une source unique ou quasi unique. Elle peut être volumétrique, protocolaire ou applicative. Elle suit souvent les étapes préparation, lancement, saturation et indisponibilité. La défense repose sur la détection rapide, la limitation du trafic, le filtrage et la robustesse de l’architecture.

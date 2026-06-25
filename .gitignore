@@ -1,0 +1,6 @@
+static/chroma_db/
+static/conversations/
+static/users.db
+__pycache__/
+*.pyc
+.env

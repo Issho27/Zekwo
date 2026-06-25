@@ -1,0 +1,3 @@
+FROM C:\Users\Linot\.ollama\models\gguf\gemma4-uncensored\Gemma4-12B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M.gguf
+PARAMETER temperature 0.3
+PARAMETER num_ctx 8192

@@ -1,0 +1,292 @@
+Attaques DDoS
+Définition
+Une attaque DDoS, pour Distributed Denial of Service, est une attaque visant à rendre un service indisponible en le surchargeant avec un grand volume de trafic. L’objectif n’est généralement pas de voler des données, mais d’empêcher les utilisateurs légitimes d’accéder à un site, une API, un serveur ou une application.
+
+Le terme “distributed” indique que le trafic provient de plusieurs machines, souvent coordonnées. Ces machines peuvent être des ordinateurs compromis, des serveurs détournés, ou des équipements infectés formant un botnet.
+
+Différence entre DoS et DDoS
+Une attaque DoS provient d’une seule source ou d’un nombre limité de sources. Une attaque DDoS provient de nombreuses machines réparties sur plusieurs réseaux, ce qui la rend plus difficile à bloquer.
+
+La DDoS est plus complexe à filtrer, car chaque source individuelle peut sembler banale. C’est l’ensemble du trafic, sa coordination et son volume qui créent l’attaque.
+
+Objectif d’une attaque
+Le but principal est d’épuiser une ressource critique du système cible. Cela peut être la bande passante réseau, la capacité de traitement du serveur, la mémoire, les connexions ouvertes, les tables d’état, ou les ressources applicatives.
+
+Quand ces ressources sont saturées, le service devient lent, instable ou totalement indisponible. Dans de nombreux cas, l’utilisateur voit des erreurs 502, 503, 504 ou des délais d’attente excessifs.
+
+Types d’attaques DDoS
+Attaques volumétriques
+Les attaques volumétriques cherchent à saturer la bande passante avec un grand volume de paquets ou de requêtes. Elles sont souvent mesurées en bits par seconde ou en paquets par seconde.
+
+Exemples fréquents :
+
+UDP flood.
+
+ICMP flood.
+
+DNS amplification.
+
+NTP amplification.
+
+SSDP amplification.
+
+CLDAP amplification.
+
+Ces attaques visent surtout la capacité réseau. Elles peuvent aussi saturer les routeurs, les liens montants ou les protections en amont.
+
+Attaques protocolaires
+Les attaques protocolaires exploitent la manière dont certains protocoles réseau gèrent les connexions. Elles visent les équipements intermédiaires comme les pare-feu, les load balancers, les proxys ou les serveurs frontaux.
+
+Exemples :
+
+SYN flood.
+
+fragmentation abusive.
+
+attaques sur la table d’état des connexions.
+
+exploitation de protocoles mal protégés.
+
+Ces attaques consomment des ressources de gestion plutôt que de simples octets de bande passante. Elles peuvent bloquer la capacité du système à suivre de nouvelles connexions.
+
+Attaques applicatives
+Les attaques applicatives ciblent la couche application, souvent HTTP, DNS, ou une API. Elles cherchent à faire consommer le plus de ressources possible par requête, parfois avec un volume relativement faible mais très coûteux.
+
+Exemples :
+
+HTTP GET flood.
+
+HTTP POST flood.
+
+attaques lentes comme Slowloris.
+
+requêtes coûteuses sur des endpoints précis.
+
+abus d’API avec paramètres lourds à traiter.
+
+Ces attaques sont parfois plus difficiles à détecter, car elles peuvent ressembler à du trafic normal. Leur efficacité vient du fait qu’elles épuisent le serveur là où il travaille le plus.
+
+Déroulement d’une attaque DDoS
+Phase 1 : préparation
+L’attaquant prépare sa capacité de trafic. Il peut utiliser un botnet, des serveurs loués, des machines compromises ou des services automatisés. Cette phase consiste aussi à identifier la cible, son point d’entrée, sa capacité de traitement et les protections en place.
+
+L’attaquant peut analyser :
+
+l’adresse IP ou le domaine visé.
+
+les ports exposés.
+
+les endpoints les plus sollicités.
+
+la présence d’un CDN ou d’un WAF.
+
+les limites de débit ou de connexion.
+
+Phase 2 : sélection de la stratégie
+L’attaquant choisit le type d’attaque le plus adapté. Si la cible a une bonne bande passante mais des ressources applicatives limitées, une attaque applicative peut être plus efficace. Si la cible dispose de peu de protection réseau, une attaque volumétrique peut suffire.
+
+Le choix dépend aussi du niveau de bruit souhaité. Une attaque très volumétrique est visible rapidement, alors qu’une attaque lente ou ciblée peut durer plus longtemps sans déclencher immédiatement les alertes.
+
+Phase 3 : lancement du trafic malveillant
+Le trafic est ensuite envoyé en masse ou par vagues. Dans une attaque distribuée, des centaines ou des milliers de sources peuvent envoyer des paquets ou des requêtes simultanément.
+
+Selon le mode opératoire, le trafic peut :
+
+inonder un port spécifique.
+
+envoyer des requêtes web répétées.
+
+multiplier les connexions incomplètes.
+
+exploiter une amplification via des serveurs tiers.
+
+cibler un point précis du système.
+
+Phase 4 : saturation progressive
+La cible commence à consommer ses ressources. Le réseau peut devenir congestionné, le serveur peut ralentir, les files d’attente augmentent, et les erreurs apparaissent. La dégradation peut être progressive ou brutale selon la taille de l’attaque.
+
+Symptômes courants :
+
+hausse du temps de réponse.
+
+augmentation des timeouts.
+
+surcharge CPU.
+
+montée de la mémoire utilisée.
+
+saturation de la bande passante.
+
+trop grand nombre de connexions simultanées.
+
+erreurs serveur répétées.
+
+Phase 5 : indisponibilité
+Quand la saturation devient trop importante, le service ne répond plus correctement. Les utilisateurs légitimes n’arrivent plus à accéder à la ressource, ou seulement de manière très dégradée.
+
+Dans certains cas, l’attaque vise une disponibilité partielle. Dans d’autres, elle cherche une coupure totale. Le résultat dépend des défenses, de l’architecture et de la capacité de montée en charge.
+
+Phase 6 : adaptation
+L’attaquant peut modifier le profil du trafic pour éviter la détection. Il peut changer de source, varier les signatures, ralentir le rythme, ou alterner entre plusieurs formes d’attaque. Cette adaptation rend les défenses automatisées plus difficiles à stabiliser.
+
+Comment une attaque se réalise
+Construction du trafic
+Une DDoS se réalise en générant un grand nombre de requêtes ou de paquets vers la cible. Le trafic peut être strictement technique, comme des paquets réseau, ou plus “normal” en apparence, comme des requêtes HTTP.
+
+Le point important est la répétition massive et la coordination. Un seul client légitime peut envoyer beaucoup de requêtes, mais une DDoS combine le volume, la distribution et la synchronisation.
+
+Utilisation de sources multiples
+L’aspect distribué permet de contourner les défenses classiques. Si le trafic vient de nombreuses IP différentes, il devient plus difficile d’appliquer un simple blocage par adresse.
+
+Les sources peuvent être :
+
+des machines infectées.
+
+des serveurs compromis.
+
+des équipements IoT détournés.
+
+des proxies ou relais.
+
+des bots automatisés.
+
+Amplification
+Certaines attaques utilisent l’amplification. L’attaquant envoie de petites requêtes à des serveurs tiers en faisant croire que la victime est la source. Les réponses de ces serveurs sont alors renvoyées vers la victime, souvent avec un volume bien supérieur à la requête initiale.
+
+Ce mécanisme permet d’augmenter fortement la puissance de l’attaque avec moins de ressources côté attaquant.
+
+Abus applicatif
+Dans une attaque applicative, l’attaquant cherche à provoquer un coût élevé côté serveur. Par exemple, il peut appeler un endpoint qui demande des calculs complexes, interroge plusieurs bases de données, ou déclenche des traitements lourds.
+
+Dans ce cas, le trafic ne doit pas forcément être énorme. Même un débit modéré peut suffire si chaque requête coûte cher à traiter.
+
+Signes de détection
+Indicateurs réseau
+Les premiers signes apparaissent souvent dans les métriques réseau :
+
+hausse soudaine du débit.
+
+explosion du nombre de paquets.
+
+trafic venant de zones géographiques inhabituelles.
+
+augmentation des connexions entrantes.
+
+ratio anormal entre requêtes réussies et échouées.
+
+Indicateurs serveur
+Sur le serveur, on observe souvent :
+
+CPU élevé.
+
+mémoire en hausse.
+
+saturation du nombre de workers.
+
+files d’attente longues.
+
+logs remplis d’erreurs répétitives.
+
+temps de réponse très variables.
+
+Indicateurs applicatifs
+Au niveau applicatif, les symptômes incluent :
+
+ralentissement des endpoints.
+
+pics de 5xx.
+
+timeouts fréquents.
+
+indisponibilité de certaines routes.
+
+comportement instable des sessions utilisateurs.
+
+Détection
+Détection par signatures
+Cette méthode compare le trafic à des modèles connus. Elle est efficace contre des attaques déjà identifiées, mais moins performante contre des variantes nouvelles ou adaptatives.
+
+Détection par seuils
+On définit des seuils d’alerte sur des métriques comme :
+
+nombre de requêtes par seconde.
+
+nombre de paquets par seconde.
+
+nombre de connexions simultanées.
+
+taux d’erreur.
+
+débit entrant.
+
+Si un seuil est dépassé, une alerte est déclenchée. Cette méthode est simple, mais peut générer des faux positifs.
+
+Détection par anomalie
+L’algorithme apprend un comportement normal, puis détecte les écarts. C’est utile pour repérer les attaques lentes ou inhabituelles.
+
+Exemples de signaux :
+
+variation brutale du trafic.
+
+changement de distribution des IP.
+
+changement de taille des paquets.
+
+comportement répétitif anormal.
+
+augmentation du coût moyen par requête.
+
+Détection par corrélation
+On combine plusieurs indicateurs pour confirmer une attaque. Par exemple, une hausse du trafic seule ne suffit pas toujours, mais si elle est accompagnée d’un taux d’erreur élevé et d’une saturation CPU, le diagnostic devient plus robuste.
+
+Mitigation
+Filtrage et blocage
+On peut bloquer certaines IP, certains réseaux, certains user agents ou certains patterns anormaux. Cela fonctionne mieux quand la source est identifiable et stable.
+
+Rate limiting
+On limite le nombre de requêtes par source sur une période donnée. Cela permet de réduire l’impact d’un trafic excessif sans bloquer tout le monde.
+
+WAF et protections applicatives
+Un WAF peut filtrer les requêtes suspectes avant qu’elles n’atteignent l’application. C’est particulièrement utile pour les attaques HTTP ou API.
+
+CDN et protection en amont
+Un CDN ou un service anti-DDoS peut absorber une partie du trafic avant qu’il n’atteigne l’infrastructure principale. Cela aide surtout contre les attaques volumétriques.
+
+Scrubbing et redirection
+Le trafic peut être redirigé vers une infrastructure de nettoyage qui sépare le trafic légitime du trafic malveillant. C’est une stratégie courante dans les architectures à forte exposition.
+
+Prévention
+Architecture résiliente
+Une architecture distribuée, redondante et capable de monter en charge réduit l’impact d’une attaque. Les services critiques ne doivent pas dépendre d’un seul point de défaillance.
+
+Surveillances et alertes
+Il faut surveiller en continu les métriques réseau, serveurs et application. Les alertes doivent signaler les variations anormales avant l’indisponibilité totale.
+
+Durcissement
+Les endpoints coûteux doivent être protégés. On peut limiter les requêtes, imposer de l’authentification, ajouter des validations et éviter les traitements inutiles.
+
+Tests de charge
+Les tests de charge permettent de connaître le comportement normal de l’infrastructure. Ils aident à distinguer une montée légitime du trafic d’une saturation suspecte.
+
+Impacts
+Impact technique
+Une DDoS peut saturer la bande passante, faire chuter les performances, casser les connexions et rendre un service inaccessible. L’impact varie selon la capacité de défense et la nature de la cible.
+
+Impact métier
+Les conséquences peuvent inclure :
+
+perte de disponibilité.
+
+perte de revenus.
+
+dégradation de l’image.
+
+surcharge des équipes.
+
+interruption de services critiques.
+
+Impact sur l’analyse
+Pour un système de détection automatique, une DDoS complique la distinction entre trafic normal et trafic hostile. Les faux positifs et les faux négatifs deviennent un enjeu majeur.
+
+Résumé opérationnel
+Une attaque DDoS est une tentative de saturation distribuée visant à rendre un service indisponible. Elle peut être volumétrique, protocolaire ou applicative. Son déroulement passe généralement par la préparation, le lancement du trafic, la saturation progressive, puis l’indisponibilité du service. La défense repose sur la détection d’anomalies, la limitation du trafic, la protection en amont et une architecture robuste.
